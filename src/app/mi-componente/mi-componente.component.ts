@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Tarea } from './models/tarea.model';
 import { MenuItem } from './models/menu-item.model';
 
@@ -7,7 +7,7 @@ import { MenuItem } from './models/menu-item.model';
   templateUrl: './mi-componente.component.html',
   styleUrls: ['./mi-componente.component.css']
 })
-export class MiComponenteComponent {
+export class MiComponenteComponent implements OnInit {
   // public menuItems: {item:string, active:boolean}[] = [];
   // Opciones para el menú
   menuItems: MenuItem[] = [];
@@ -26,6 +26,13 @@ export class MiComponenteComponent {
     // this.menuItems.push(item1);
     this.menuItems.push( {item: 'Nueva tarea', active: false} );
     this.menuItems.push( {item: 'Mis tareas', active: true} );
+  }
+
+  ngOnInit(): void {
+    const tareasJson = localStorage.getItem("tareas");
+    if (tareasJson != null) {
+      this.tareas = JSON.parse(tareasJson);
+    }
   }
 
   // public setMenuItemAsActive(item: {item:string, active:boolean}): void {
@@ -59,5 +66,17 @@ export class MiComponenteComponent {
       descripcion: '',
       status: 'Pendiente'
     }
+    this.setMenuItemAsActive(1);
+
+    this.almacenarDatos();
+  }
+
+  public cambiarStatus(index:number, status: string): void {
+    this.tareas[index].status = status;
+    this.almacenarDatos();
+  }
+
+  private almacenarDatos(): void {
+    localStorage.setItem("tareas", JSON.stringify(this.tareas));
   }
 }
